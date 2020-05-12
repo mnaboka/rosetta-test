@@ -1,0 +1,26 @@
+version: '3'
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./genesis.json:/genesis.json"
+      - "./data:/data"
+    environment:
+      NODE_ENTRYPOINT: /usr/local/bin/rosetta
+      NODE_ARGS: "run --genesis /genesis.json --staticNode enode://05977f6b7d3e16a99d27b714f8a029a006e41ec7732167d373dd920d31f72b3a1776650798d8763560854369d36867e9564dad13b4b60a90c347feeb491d83a9@34.83.42.50:30303"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - init
+
+  # container that starts first.
+  # It contains all configs, templates, assets and creates named volumes.
+  init:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./data:/data"
+    command: ["/bin/true"]
